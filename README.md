@@ -15,7 +15,7 @@ pip install -r requirements.txt
 cd backend
 python manage.py migrate
 python manage.py import_data
-python manage.py runserver
+python manage.py runserver 127.0.0.1:8010
 ```
 
 In a second terminal:

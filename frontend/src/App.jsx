@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
-const API_URL = 'http://127.0.0.1:8000/api/disagreements/'
+const API_URL = 'http://127.0.0.1:8010/api/disagreements/'
 
 function App() {
   const [org, setOrg] = useState('ORG-A')
