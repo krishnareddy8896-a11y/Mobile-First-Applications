@@ -37,6 +37,8 @@ pytest -q
 
 ## CSV input
 
+The repository currently includes a small demo set in `backend/data/` so the screen has visible rows without additional setup. Replace these files with the real assessment CSVs before grading or final use.
+
 Place these three files in `backend/data/`:
 
 - `locations.csv`

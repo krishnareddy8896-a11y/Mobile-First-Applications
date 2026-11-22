@@ -1,0 +1,9 @@
+entry_id,record_ref,location_id,recorded_on,value,label
+E-1001,rec1001,LOC-101,2026-11-01,"120.00",matched
+E-1002,REC - 1002,LOC-102,2026-11-02,"70.00",value mismatch
+E-1003,1003,LOC-103,2026-11-03,"20.00",part 1 of 2
+E-1004,REC-1003,LOC-103,2026-11-03,"25.00",part 2 of 2
+E-1005,REC-1004,LOC-201,2026-11-04,"210.00",cross-org location mismatch
+E-2001,REC-2001,LOC-201,2026-11-06,"150.00",matched
+E-2002,REC-2002,LOC-202,2026-11-08,"1,25,400.00",value and date mismatch
+E-9001,REC-9001,LOC-201,2026-11-09,"",orphan blank value
