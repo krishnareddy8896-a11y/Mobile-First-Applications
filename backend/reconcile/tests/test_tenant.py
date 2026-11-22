@@ -15,6 +15,13 @@ def test_org_a_api_contains_no_org_b_location_or_record():
         state="CONFIRMED",
     )
     SystemBEntry.objects.create(
+        entry_id="E-CROSS",
+        record_ref="REC-A",
+        record_ref_raw="REC-A",
+        location=b_location,
+        value="90.00",
+    )
+    SystemBEntry.objects.create(
         entry_id="E-B",
         record_ref="REC-B",
         record_ref_raw="REC-B",
@@ -27,6 +34,7 @@ def test_org_a_api_contains_no_org_b_location_or_record():
     text = str(body)
     assert "LOC-201" not in text
     assert "REC-B" not in text
+    assert "REC-A" in text
 
 
 @pytest.mark.django_db
@@ -38,6 +46,13 @@ def test_org_b_api_contains_no_org_a_location_or_record():
         location=a_location,
         total_value="100.00",
         state="CONFIRMED",
+    )
+    SystemBEntry.objects.create(
+        entry_id="E-CROSS",
+        record_ref="REC-A",
+        record_ref_raw="REC-A",
+        location=b_location,
+        value="90.00",
     )
     SystemBEntry.objects.create(
         entry_id="E-B",

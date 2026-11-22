@@ -71,13 +71,13 @@ function App() {
                 <th>Reason</th>
                 <th>Record ID</th>
                 <th>Location</th>
-                <th>System A value</th>
                 <th
                   className="sortable"
                   onClick={() => setSortDescending((current) => !current)}
                 >
-                  System B value {sortDescending ? '↓' : '↑'}
+                  System A value {sortDescending ? '↓' : '↑'}
                 </th>
+                <th>System B value</th>
                 <th>Difference</th>
               </tr>
             </thead>

@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 
@@ -11,25 +13,30 @@ def disagreement_view(request):
     if not org:
         return JsonResponse({"error": "org is required"}, status=400)
 
-    a_rows = {}
-    for record in SystemARecord.objects.select_related("location"):
-        if record.location and record.location.org_id == org:
-            a_rows[record.record_id] = {
-                "total": record.total_value,
-                "location": record.location.location_id,
-                "date": record.event_date,
-                "state": record.state,
-            }
+    a_records = list(SystemARecord.objects.select_related("location"))
+    a_by_id = {record.record_id: record for record in a_records}
+    a_rows = {
+        record.record_id: {
+            "total": record.total_value,
+            "location": record.location.location_id if record.location else None,
+            "date": record.event_date,
+            "state": record.state,
+        }
+        for record in a_records
+    }
 
-    b_rows = []
-    for entry in SystemBEntry.objects.select_related("location"):
-        b_rows.append({
+    b_entries = list(SystemBEntry.objects.select_related("location"))
+    b_by_id = {entry.entry_id: entry for entry in b_entries}
+    b_rows = [
+        {
             "entry_id": entry.entry_id,
             "ref": entry.record_ref,
             "value": entry.value,
             "location": entry.location.location_id if entry.location else None,
             "date": entry.recorded_on,
-        })
+        }
+        for entry in b_entries
+    ]
 
     disagreements = compare(a_rows, b_rows)
     reason = request.GET.get("reason")
@@ -38,8 +45,8 @@ def disagreement_view(request):
 
     output = []
     for row in disagreements:
-        a_record = SystemARecord.objects.select_related("location").filter(record_id=row["record_id"]).first()
-        entry = SystemBEntry.objects.select_related("location").filter(entry_id=row.get("entry_id")).first() if row.get("entry_id") else None
+        a_record = a_by_id.get(row["record_id"])
+        entry = b_by_id.get(row.get("entry_id"))
 
         if a_record and a_record.location:
             source_org = a_record.location.org_id
@@ -51,14 +58,11 @@ def disagreement_view(request):
         if source_org != org:
             continue
 
-        b_location = row.get("b_location")
-        if b_location:
-            b_location_obj = next(
-                (candidate.location for candidate in SystemBEntry.objects.select_related("location") if candidate.location and candidate.location.location_id == b_location),
-                None,
-            )
-            if b_location_obj and b_location_obj.org_id != org:
-                b_location = None
+        b_location = (
+            entry.location.location_id
+            if entry and entry.location and entry.location.org_id == org
+            else None
+        )
 
         difference = None
         if row["a_value"] is not None and row["b_value"] is not None:
@@ -74,8 +78,11 @@ def disagreement_view(request):
         })
 
     sort = request.GET.get("sort")
-    if sort:
+    if sort and sort.lstrip("-") == "value":
         descending = sort.startswith("-")
-        output.sort(key=lambda row: row["a_value"] or "", reverse=descending)
+        populated = [row for row in output if row["a_value"]]
+        empty = [row for row in output if not row["a_value"]]
+        populated.sort(key=lambda row: Decimal(row["a_value"]), reverse=descending)
+        output = populated + empty
 
     return JsonResponse({"rows": output})

@@ -37,7 +37,7 @@ pytest -q
 
 ## CSV input
 
-The repository currently includes a small demo set in `backend/data/` so the screen has visible rows without additional setup. Replace these files with the real assessment CSVs before grading or final use.
+The supplied assignment dataset is included in `backend/data/`; importing it loads 5 locations, 120 System A records, and 121 System B entries. `import_data` synchronizes the database with these files, removing stale rows from earlier imports.
 
 Place these three files in `backend/data/`:
 
@@ -45,7 +45,7 @@ Place these three files in `backend/data/`:
 - `system_a.csv`
 - `system_b.csv`
 
-The CSV files are not included in this workspace snapshot, so they must be supplied before importing real records. The importer keeps every saved row, stores blank or invalid B values as null, and uses `update_or_create` for repeatable imports.
+The importer keeps every source row, stores blank or invalid B values as null, and uses `update_or_create` for repeatable imports.
 
 ## What was deliberately not built
 

@@ -36,7 +36,10 @@ def import_locations(path):
                 continue
             Location.objects.update_or_create(
                 location_id=location_id,
-                defaults={"org_id": row.get("org_id") or "", "name": row.get("name") or ""},
+                defaults={
+                    "org_id": row.get("org_id") or "",
+                    "name": row.get("location_name") or row.get("name") or "",
+                },
             )
             saved_count += 1
     return read_count, saved_count
