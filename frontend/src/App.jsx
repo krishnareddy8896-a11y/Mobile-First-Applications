@@ -1,16 +1,21 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
-const API_URL = 'http://127.0.0.1:8010/api/disagreements/'
+const API_URL = import.meta.env.VITE_API_URL
+  || (import.meta.env.DEV ? 'http://127.0.0.1:8010/api/disagreements/' : '')
 
 function App() {
   const [org, setOrg] = useState('ORG-A')
   const [reason, setReason] = useState('')
   const [sortDescending, setSortDescending] = useState(false)
   const [rows, setRows] = useState([])
-  const [error, setError] = useState('')
+  const [error, setError] = useState(
+    API_URL ? '' : 'API endpoint is not configured. Set VITE_API_URL for this deployment.',
+  )
 
   useEffect(() => {
+    if (!API_URL) return
+
     const params = new URLSearchParams({ org, sort: `${sortDescending ? '-' : ''}value` })
     if (reason) params.set('reason', reason)
     fetch(`${API_URL}?${params}`)

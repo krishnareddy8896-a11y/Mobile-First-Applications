@@ -47,6 +47,28 @@ Place these three files in `backend/data/`:
 
 The importer keeps every source row, stores blank or invalid B values as null, and uses `update_or_create` for repeatable imports.
 
+## Deploy on Vercel
+
+The frontend and Django API are separate Vercel projects:
+
+1. Push this repository to the Git provider connected to Vercel.
+2. In the backend Vercel project, set **Root Directory** to `backend`. Vercel detects Django from `manage.py`; `backend/pyproject.toml` runs migrations and imports the CSVs at build time.
+3. Add a persistent PostgreSQL database (for example, a Neon integration) and set these backend environment variables for Production and Preview:
+   - `DATABASE_URL`: the database connection string
+   - `DJANGO_SECRET_KEY`: a generated Django secret
+   - `DJANGO_ALLOWED_HOSTS`: `mobile-first-applications-backend.vercel.app`
+   - `FRONTEND_ORIGINS`: `https://mobile-first-applications-jet.vercel.app`
+4. Redeploy the backend. Verify `https://mobile-first-applications-backend.vercel.app/api/disagreements/?org=ORG-A` returns JSON.
+5. In the frontend Vercel project, set **Root Directory** to `frontend`, then redeploy. The production API URL is set in `frontend/.env.production`.
+
+Generate a secret locally with:
+
+```powershell
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
+
+Do not use SQLite on Vercel: serverless filesystems are not persistent. The build imports the CSV snapshot into PostgreSQL so the API can read it after deployment.
+
 ## What was deliberately not built
 
 - Authentication
