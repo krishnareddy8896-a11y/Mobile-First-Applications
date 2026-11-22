@@ -157,7 +157,7 @@ CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.environ.get(
         "FRONTEND_ORIGINS",
-        "http://localhost:5173,http://127.0.0.1:5173,https://mobile-first-applications-jet.vercel.app",
+        "http://localhost:5173,http://127.0.0.1:5173,https://mobile-first-applications-jet.vercel.app,https://mobile-first-applications-zieg.vercel.app",
     ).split(",")
     if origin.strip()
 ]

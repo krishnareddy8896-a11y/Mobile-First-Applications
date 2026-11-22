@@ -57,7 +57,7 @@ The frontend and Django API are separate Vercel projects:
    - `DATABASE_URL`: the database connection string
    - `DJANGO_SECRET_KEY`: a generated Django secret
    - `DJANGO_ALLOWED_HOSTS`: `mobile-first-applications-backend.vercel.app`
-   - `FRONTEND_ORIGINS`: `https://mobile-first-applications-jet.vercel.app`
+   - `FRONTEND_ORIGINS`: `https://mobile-first-applications-jet.vercel.app,https://mobile-first-applications-zieg.vercel.app`
 4. Redeploy the backend. Verify `https://mobile-first-applications-backend.vercel.app/api/disagreements/?org=ORG-A` returns JSON.
 5. In the frontend Vercel project, set **Root Directory** to `frontend`, then redeploy. The production API URL is set in `frontend/.env.production`.
 
